@@ -11,11 +11,16 @@ const bustFastlyCache = async (urlToBust) => {
                 }
             },
             (error, response, body) => {
-                if (error || response && response.statusCode !== 200) {
+                if (error) {
+                    reject({ error: error.reason })
+                    return
+                }
+
+                if (response && response.hasOwnProperty('statusCode') && response.statusCode !== 200) {
                     reject({
-                        error: error,
                         statusCode: response.statusCode
                     })
+                    return
                 }
 
                 resolve(JSON.parse(response.body))
@@ -30,21 +35,23 @@ if (process.env.FASTLY_API_KEY === undefined) {
 }
 
 const bustUrls = async (urlsToBust) => {
-    let result
-    
-    for (const url of urlsToBust) {
-        try {
-            result = await bustFastlyCache(url)
-            console.log(`Busted ${url}, status: ${result.status}, id: ${result.id}`)
-        } catch(ex) {
-            console.error(ex)
+    return new Promise(async (resolve) => {
+        let result
+        
+        for (const url of urlsToBust) {
+            try {
+                result = await bustFastlyCache(url)
+                console.log(`Busted ${url}, status: ${result.status}, id: ${result.id}`)
+            } catch(ex) {
+                console.error(ex)
+            }
         }
-    }
+
+        resolve()
+    })
 }
 
 bustUrls([
-    'https://mydomain.com',
-    'http://mydomain.com',
-    'https://mydomain.com/test',
-    'http://mydomain.com/test'
+    'http://whatever.com',
+    'https://whatever.com/path'
 ])
