@@ -43,8 +43,8 @@ const bustUrls = async (urlsToBust) => {
 }
 
 bustUrls([
-    'https://zesty.pw',
-    'http://zesty.pw',
-    'https://zesty.pw/test',
-    'http://zesty.pw/test'
+    'https://mydomain.com',
+    'http://mydomain.com',
+    'https://mydomain.com/test',
+    'http://mydomain.com/test'
 ])
